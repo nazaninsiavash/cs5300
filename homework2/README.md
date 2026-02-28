@@ -16,7 +16,7 @@ Django REST API + UI for booking movie seats. Built for the intro Django assignm
 ## Project layout
 
 ```
-movie_theater_booking/
+homework2/
 ├── movie_theater_booking/   # project settings, urls, wsgi
 ├── bookings/
 │   ├── models.py            # Movie, Seat, Booking
@@ -45,7 +45,7 @@ python3 -m venv hw2 --system-site-packages
 source hw2/bin/activate
 
 # 2. install deps
-cd ./cs5300/homework2/movie_theater_booking-adv
+cd ./cs5300/homework2
 pip install -r requirements.txt
 
 # 3. migrate
