@@ -1,0 +1,129 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Book - {{ movie.title }}{% endblock %}
+
+{% block extra_head %}
+<style>
+  .seat-grid { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+
+  <!-- Back link -->
+  <a href="{% url 'movie_list' %}" class="btn btn-sm btn-outline-secondary mb-4">
+    <i class="bi bi-arrow-left me-1"></i> All Movies
+  </a>
+
+  <!-- Movie info card -->
+  <div class="movie-card p-4 mb-5 d-flex gap-4 align-items-start flex-wrap">
+    <div class="rounded-3 overflow-hidden flex-shrink-0" style="width:100px;height:140px;background:#1a1a2e;display:flex;align-items:center;justify-content:center;">
+      {% if movie.poster_url %}
+        <img src="{{ movie.poster_url }}" alt="{{ movie.title }}" style="width:100%;height:100%;object-fit:cover;"/>
+      {% else %}
+        <i class="bi bi-film fs-1 text-secondary"></i>
+      {% endif %}
+    </div>
+    <div>
+      <h2 class="text-white fw-bold mb-1">{{ movie.title }}</h2>
+      <div class="d-flex gap-3 text-secondary small mb-2">
+        <span><i class="bi bi-calendar3 me-1 text-danger"></i>{{ movie.release_date|date:"M d, Y" }}</span>
+        <span><i class="bi bi-clock me-1 text-warning"></i>{{ movie.duration }} min</span>
+      </div>
+      <p class="text-secondary mb-0">{{ movie.description }}</p>
+    </div>
+  </div>
+
+  <!-- Seat selection -->
+  <div class="movie-card p-4 p-md-5">
+    <h4 class="text-white mb-1 fw-bold text-center">
+      <i class="bi bi-grid-3x3-gap me-2 text-danger"></i>Select Your Seat
+    </h4>
+    <p class="text-secondary text-center small mb-4">Click an available seat to select it, then confirm your booking.</p>
+
+    <!-- Screen -->
+    <div class="screen-bar mb-1"></div>
+    <p class="text-center text-secondary small mb-4" style="letter-spacing:5px;font-size:.7rem;">SCREEN</p>
+
+    <!-- Legend -->
+    <div class="d-flex justify-content-center gap-4 mb-4 flex-wrap">
+      <div class="d-flex align-items-center gap-2">
+        <div class="seat-btn available d-flex align-items-center justify-content-center" style="pointer-events:none;width:30px;height:30px;font-size:.6rem;">A1</div>
+        <span class="text-secondary small">Available</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="seat-btn selected d-flex align-items-center justify-content-center" style="pointer-events:none;width:30px;height:30px;font-size:.6rem;">A2</div>
+        <span class="text-secondary small">Selected</span>
+      </div>
+      <div class="d-flex align-items-center gap-2">
+        <div class="seat-btn booked d-flex align-items-center justify-content-center" style="pointer-events:none;width:30px;height:30px;font-size:.6rem;">A3</div>
+        <span class="text-secondary small">Booked</span>
+      </div>
+    </div>
+
+    <!-- Seat Grid + Booking Form -->
+    <form method="post" id="bookingForm">
+      {% csrf_token %}
+      <input type="hidden" name="seat_id" id="seatIdInput" value=""/>
+
+      {% if seats %}
+      <div class="seat-grid mb-4" id="seatGrid">
+        {% for seat in seats %}
+          {% if seat.is_booked %}
+            <button type="button" class="seat-btn booked" disabled title="Already booked">{{ seat.seat_number }}</button>
+          {% else %}
+            <button
+              type="button"
+              class="seat-btn available"
+              data-seat-id="{{ seat.id }}"
+              data-seat-num="{{ seat.seat_number }}"
+              onclick="selectSeat(this)"
+              title="Click to select seat {{ seat.seat_number }}"
+            >{{ seat.seat_number }}</button>
+          {% endif %}
+        {% endfor %}
+      </div>
+      {% else %}
+        <p class="text-center text-secondary py-4">No seats have been added for this movie yet.</p>
+      {% endif %}
+
+      <!-- Confirm panel (hidden until seat chosen) -->
+      <div id="confirmPanel" class="text-center" style="display:none!important;">
+        <div class="movie-card p-3 d-inline-block mb-3" style="min-width:240px;">
+          <p class="text-secondary small mb-1">You selected</p>
+          <p class="text-white fw-bold fs-5 mb-0">Seat <span id="selectedSeatLabel">—</span></p>
+        </div>
+        <br/>
+        <button type="submit" class="btn btn-cinema btn-lg px-5">
+          <i class="bi bi-check-circle me-2"></i>Confirm Booking
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+  let selectedBtn = null;
+
+  function selectSeat(btn) {
+    // Deselect previous
+    if (selectedBtn) {
+      selectedBtn.classList.remove('selected');
+      selectedBtn.classList.add('available');
+    }
+    // Select new
+    btn.classList.remove('available');
+    btn.classList.add('selected');
+    selectedBtn = btn;
+
+    // Update hidden input and label
+    document.getElementById('seatIdInput').value = btn.dataset.seatId;
+    document.getElementById('selectedSeatLabel').textContent = btn.dataset.seatNum;
+
+    // Show confirm panel
+    document.getElementById('confirmPanel').style.setProperty('display', 'block', 'important');
+  }
+</script>
+{% endblock %}

@@ -1,0 +1,51 @@
+{% extends 'bookings/base.html' %}
+{% block title %}Sign Up{% endblock %}
+
+{% block content %}
+<div class="container py-5 d-flex justify-content-center">
+  <div class="auth-card p-4 p-md-5 w-100">
+    <div class="text-center mb-4">
+      <i class="bi bi-person-plus display-4 text-danger"></i>
+      <h3 class="text-white fw-bold mt-2">Create Account</h3>
+      <p class="text-secondary">Sign up to start booking seats</p>
+    </div>
+
+    <form method="post">
+      {% csrf_token %}
+      {% if form.errors %}
+        <div class="alert alert-dark-danger mb-3">
+          <i class="bi bi-exclamation-triangle-fill me-2"></i>
+          Please fix the errors below.
+        </div>
+      {% endif %}
+
+      {% for field in form %}
+        <div class="mb-3">
+          <label class="form-label text-secondary small">{{ field.label }}</label>
+          <input type="{{ field.field.widget.input_type }}"
+                 name="{{ field.html_name }}"
+                 class="form-control form-control-dark"
+                 placeholder="{{ field.label }}"
+                 {% if field.field.required %}required{% endif %}/>
+          {% if field.errors %}
+            <div class="text-danger small mt-1">{{ field.errors|join:", " }}</div>
+          {% endif %}
+          {% if field.help_text %}
+            <div class="text-secondary small mt-1">{{ field.help_text }}</div>
+          {% endif %}
+        </div>
+      {% endfor %}
+
+      <button type="submit" class="btn btn-cinema w-100 py-2 mt-2">
+        <i class="bi bi-person-check me-2"></i>Create Account
+      </button>
+    </form>
+
+    <hr class="border-secondary my-4"/>
+    <p class="text-secondary text-center small mb-0">
+      Already have an account?
+      <a href="/proxy/3000/login/" class="text-danger">Sign in here</a>
+    </p>
+  </div>
+</div>
+{% endblock %}
