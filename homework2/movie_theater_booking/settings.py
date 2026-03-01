@@ -18,7 +18,7 @@ SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
 
 # only set proxy prefix when running the server, not during tests
 
-if 'test' not in sys.argv and 'pytest' not in sys.argv[0] and not os.environ.get('BEHAVE_TESTING'):
+if 'test' not in sys.argv and 'pytest' not in sys.argv[0] and not os.environ.get('BEHAVE_TESTING') and not os.environ.get('DISABLE_FORCE_SCRIPT'):
     FORCE_SCRIPT_NAME = '/proxy/3000'
 
 INSTALLED_APPS = [

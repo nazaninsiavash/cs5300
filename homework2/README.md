@@ -56,7 +56,7 @@ python manage.py migrate
 python manage.py seed_data
 # adds 4 movies with 40 seats each + demo user: demo / demo1234
 
-# 5. create admin account
+# 5. create admin account (optional)
 python manage.py createsuperuser
 
 # 6. run
