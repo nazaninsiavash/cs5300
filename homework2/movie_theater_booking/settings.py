@@ -1,4 +1,6 @@
+import sys
 from pathlib import Path
+import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -13,9 +15,11 @@ SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 USE_X_FORWARDED_HOST = True
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
-FORCE_SCRIPT_NAME = '/proxy/3000'
-LOGIN_REDIRECT_URL = '/'
-LOGOUT_REDIRECT_URL = '/'
+
+# only set proxy prefix when running the server, not during tests
+
+if 'test' not in sys.argv and 'pytest' not in sys.argv[0] and not os.environ.get('BEHAVE_TESTING'):
+    FORCE_SCRIPT_NAME = '/proxy/3000'
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -25,6 +29,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'behave_django',  
     'bookings',
 ]
 

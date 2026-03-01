@@ -88,12 +88,15 @@ python manage.py test bookings
 # with coverage
 pip install coverage
 coverage run manage.py test bookings
-coverage report
+#app's coverage without Django internals, run:
+coverage report --include="bookings/*,movie_theater_booking/*,manage.py"
+
 ```
 
 ## BDD tests
 
 ```bash
+pip install behave behave-django --break-system-packages
 pip install behave behave-django
 python manage.py behave
 ```
@@ -106,7 +109,7 @@ python manage.py behave
 2. Go to render.com → New Web Service → connect repo
 3. It'll pick up `render.yaml` automatically
 4. Set a `SECRET_KEY` env var
-5. Done — build command runs migrations + seed automatically
+5. Done!  build command runs migrations + seed automatically
 
 ---
 
