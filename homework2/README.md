@@ -103,13 +103,32 @@ python manage.py behave
 
 ---
 
-## Deploying to Render
+## Deployment (Render)
 
-1. Push to GitHub
-2. Go to render.com → New Web Service → connect repo
-3. It'll pick up `render.yaml` automatically
-4. Set a `SECRET_KEY` env var
-5. Done!  build command runs migrations + seed automatically
+The app is deployed at: https://cs5300.onrender.com
+
+### How to Deploy on Render
+
+1. Push code to GitHub
+2. Go to [render.com](https://render.com) and sign in with GitHub
+3. Click **New** → **Web Service**
+4. Select your GitHub repository
+5. Configure:
+   - **Language**: Python 3
+   - **Root Directory**: `homework2`
+   - **Build Command**: `pip install -r requirements.txt && python manage.py migrate && python manage.py seed_data`
+   - **Start Command**: `gunicorn movie_theater_booking.wsgi:application`
+   - **Instance Type**: Free
+6. Add Environment Variables:
+   - `SECRET_KEY` = your secret key
+   - `DEBUG` = `False`
+   - `ALLOWED_HOSTS` = `*`
+   - `DISABLE_FORCE_SCRIPT` = `1`
+7. Click **Deploy Web Service**
+
+### Demo Credentials
+- Username: `demo`
+- Password: `demo1234`
 
 ---
 
